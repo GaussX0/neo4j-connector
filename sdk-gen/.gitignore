@@ -1,0 +1,12 @@
+.classpath
+.gradle
+.project
+.settings
+bin/
+build/
+subprojects/*
+!subprojects/java/
+!subprojects/neo4j_test_connector
+!subprojects/neo4j_test_connectorflight
+testdb/
+*.log
