@@ -53,6 +53,7 @@ public class DelegatingFlightProducer implements FlightProducer
     private static final Logger LOGGER = getLogger(DelegatingFlightProducer.class);
 
     private static final String UNKNOWN_VERSION = "unknown";
+    private static final String DEFAULT_VERSION = "1.0.0";
 
     /**
      * Action type to check the health of the service and return its version.
@@ -298,7 +299,7 @@ public class DelegatingFlightProducer implements FlightProducer
                 try {
                     version = this.getClass().getPackage().getImplementationVersion();
                     if (version == null) {
-                        version = UNKNOWN_VERSION;
+                        version = DEFAULT_VERSION;
                     }
                 }
                 catch (final Exception e) {
