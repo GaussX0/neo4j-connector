@@ -5,6 +5,7 @@
 /* *************************************************** */
 package com.yourorganizationname.connect.neo4jtestconnector;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.arrow.flight.Ticket;
@@ -33,6 +34,8 @@ public class Neo4jTestConnector
         super(properties);
     }
 
+    private Neo4jResourceMapper resourceMapper = new Neo4jResourceMapper();
+
     @Override
     public void close() throws Exception
     {
@@ -54,18 +57,10 @@ public class Neo4jTestConnector
         final String dbPort = (String) criteria.getConnectionProperties().get("port");
         final String dbUser = (String) criteria.getConnectionProperties().get("username");
         final String dbPassword = (String) criteria.getConnectionProperties().get("password");
-        final String dbUri = "bolt://" + dbHost + ":" + dbPort;
-        System.out.println("Connecting to Neo4j at " + dbUri);
-        System.out.println("Username: " + dbUser);
-        System.out.println("Password: " + dbPassword);
-        System.out.println("Criteria: " + criteria);
+        final Object dbSSLObject = criteria.getConnectionProperties().get("ssl");
+        final boolean dbSSL = dbSSLObject != null && Boolean.parseBoolean(dbSSLObject.toString());
 
-
-        try (var driver = GraphDatabase.driver(dbUri,  AuthTokens.basic(dbUser, dbPassword))) {
-            driver.verifyConnectivity();
-            System.out.println("Connection established.");
-        }
-        return null;
+        return resourceMapper.getAssetDescriptors(dbHost, dbPort, dbUser, dbPassword, dbSSL);
     }
 
     @Override
