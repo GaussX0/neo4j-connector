@@ -67,8 +67,7 @@ public class DerbyDatasourceType extends CustomFlightDatasourceType
         properties.addConnectionItem(new CustomDatasourceTypeProperty().name("password").label("Password").description("Password")
                 .type(TypeEnum.STRING).required(true).masked(true).group("credentials"));
         properties.addConnectionItem(new CustomDatasourceTypeProperty().name("ssl").label("Port is SSL-enabled")
-                .description("The port is configured to accept SSL connections").type(TypeEnum.BOOLEAN).required(false)
-                .defaultValue("false").group("ssl"));
+                .description("The port is configured to accept SSL connections").type(TypeEnum.BOOLEAN).required(false).group("ssl"));
         properties.addConnectionItem(new CustomDatasourceTypeProperty().name("create_database").label("Create database")
                 .description("Whether database should be created").type(TypeEnum.BOOLEAN).required(false).defaultValue("false")
                 .group("other"));

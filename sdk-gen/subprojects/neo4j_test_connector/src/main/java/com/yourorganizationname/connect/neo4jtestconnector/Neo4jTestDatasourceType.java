@@ -105,7 +105,6 @@ public class Neo4jTestDatasourceType extends CustomFlightDatasourceType
                 .type(TypeEnum.BOOLEAN)
                 .required(false)
                 .masked(false)
-                .defaultValue("")
                 .placeholder("")
                 .multiline(false)
                 .values(Collections.emptyList())
