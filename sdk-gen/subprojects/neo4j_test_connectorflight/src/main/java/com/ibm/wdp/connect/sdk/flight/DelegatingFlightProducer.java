@@ -342,10 +342,6 @@ public class DelegatingFlightProducer implements FlightProducer
             final Map<String, String> actions = new TreeMap<>();
             actions.put(ACTION_HEALTH_CHECK, ACTION_HEALTH_CHECK_DESCRIPTION);
             actions.put(ACTION_LIST_DATASOURCE_TYPES, ACTION_LIST_DATASOURCE_TYPES_DESCRIPTION);
-            actions.put(ACTION_PUT_SETUP, ACTION_PUT_SETUP_DESCRIPTION);
-            actions.put(ACTION_PUT_WRAPUP, ACTION_PUT_WRAPUP_DESCRIPTION);
-            actions.put(ACTION_TEST, ACTION_TEST_DESCRIPTION);
-            actions.put(ACTION_VALIDATE, ACTION_VALIDATE_DESCRIPTION);
             for (final CustomFlightDatasourceType datasourceType : datasourceTypes.getDatasourceTypes()) {
                 if (datasourceType.getActions() != null) {
                     for (final CustomDatasourceTypeAction action : datasourceType.getActions()) {
