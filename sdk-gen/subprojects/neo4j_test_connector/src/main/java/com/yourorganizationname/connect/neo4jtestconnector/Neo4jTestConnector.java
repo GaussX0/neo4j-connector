@@ -44,23 +44,15 @@ public class Neo4jTestConnector
     }
 
     @Override
-    public void connect()
-    {
+    public void connect() throws Exception {
         // TODO Auto-generated method stub
-
+        resourceMapper.testConnection(this.getConnectionProperties());
     }
 
     @Override
     public List<CustomFlightAssetDescriptor> discoverAssets(CustomFlightAssetsCriteria criteria) throws Exception
     {
-        final String dbHost = (String) criteria.getConnectionProperties().get("host");
-        final String dbPort = (String) criteria.getConnectionProperties().get("port");
-        final String dbUser = (String) criteria.getConnectionProperties().get("username");
-        final String dbPassword = (String) criteria.getConnectionProperties().get("password");
-        final Object dbSSLObject = criteria.getConnectionProperties().get("ssl");
-        final boolean dbSSL = dbSSLObject != null && Boolean.parseBoolean(dbSSLObject.toString());
-
-        return resourceMapper.getAssetDescriptors(dbHost, dbPort, dbUser, dbPassword, dbSSL);
+        return resourceMapper.getAssetDescriptors(criteria.getConnectionProperties());
     }
 
     @Override

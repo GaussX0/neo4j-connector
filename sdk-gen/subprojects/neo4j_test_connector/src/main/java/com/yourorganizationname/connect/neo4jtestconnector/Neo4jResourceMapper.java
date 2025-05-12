@@ -1,5 +1,6 @@
 package com.yourorganizationname.connect.neo4jtestconnector;
 
+import com.ibm.wdp.connect.common.sdk.api.models.ConnectionProperties;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetDescriptor;
 import com.ibm.wdp.connect.common.sdk.api.models.DiscoveredAssetType;
 import org.neo4j.driver.AuthTokens;
@@ -7,18 +8,28 @@ import org.neo4j.driver.GraphDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Neo4jResourceMapper {
 
     public static final String LABEL_QUERY = "CALL db.labels();";
     public static final String RELATIONSHIP_QUERY = "CALL db.relationshipTypes();";
 
-    public List<CustomFlightAssetDescriptor> getAssetDescriptors(String dbHost, String dbPort, String dbUser, String dbPassword, boolean dbSSL) {
-        List<CustomFlightAssetDescriptor> response = new ArrayList<>();
-        final String protocol = dbSSL ? "bolt+s" : "bolt";
-        final String dbUri = protocol + "://" + dbHost + ":" + dbPort;
+    public void testConnection(Properties connectionProperties) throws Exception {
+        final Neo4jConnection connection = new Neo4jConnection(connectionProperties);
+        try (var driver = connection.getDriver()) {
+            driver.verifyConnectivity();
+        } catch (Exception e) {
+            throw new Exception("Failed to connect to Neo4j database: " + e.getMessage(), e);
+        }
 
-        try (var driver = GraphDatabase.driver(dbUri,  AuthTokens.basic(dbUser, dbPassword))) {
+    }
+
+    public List<CustomFlightAssetDescriptor> getAssetDescriptors(ConnectionProperties connectionProperties) {
+        List<CustomFlightAssetDescriptor> response = new ArrayList<>();
+        final Neo4jConnection connection = new Neo4jConnection(connectionProperties);
+
+        try (var driver = connection.getDriver()) {
             driver.verifyConnectivity();
 
             try (var session = driver.session()) {
