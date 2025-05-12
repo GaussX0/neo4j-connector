@@ -15,6 +15,8 @@ import com.ibm.wdp.connect.common.sdk.api.models.ConnectionActionResponse;
 import com.ibm.wdp.connect.common.sdk.api.models.ConnectionProperties;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetDescriptor;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetsCriteria;
+import org.neo4j.driver.AuthTokens;
+import org.neo4j.driver.GraphDatabase;
 
 @SuppressWarnings({ "PMD.AvoidDollarSigns", "PMD.ClassNamingConventions" })
 public class Neo4jTestConnector
@@ -48,7 +50,16 @@ public class Neo4jTestConnector
     @Override
     public List<CustomFlightAssetDescriptor> discoverAssets(CustomFlightAssetsCriteria criteria) throws Exception
     {
-        // TODO Auto-generated method stub
+        final String dbHost = (String) criteria.getConnectionProperties().get("host");
+        final String dbPort = (String) criteria.getConnectionProperties().get("port");
+        final String dbUser = (String) criteria.getConnectionProperties().get("username");
+        final String dbPassword = (String) criteria.getConnectionProperties().get("password");
+        final String dbUri = "bolt://" + dbHost + ":" + dbPort;
+
+        try (var driver = GraphDatabase.driver(dbUri,  AuthTokens.basic(dbUser, dbPassword))) {
+            driver.verifyConnectivity();
+            System.out.println("Connection established.");
+        }
         return null;
     }
 

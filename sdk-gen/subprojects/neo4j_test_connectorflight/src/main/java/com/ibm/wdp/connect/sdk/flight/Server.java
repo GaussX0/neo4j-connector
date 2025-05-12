@@ -38,7 +38,6 @@ public class Server implements AutoCloseable, ServletContextListener
     @Override
     public void contextInitialized(ServletContextEvent sce)
     {
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         LOG.entering(this.getClass().toString(), "contextInitialized");
         final String flightUrl = System.getenv("FLIGHT_URL");
         if (flightUrl != null) {
