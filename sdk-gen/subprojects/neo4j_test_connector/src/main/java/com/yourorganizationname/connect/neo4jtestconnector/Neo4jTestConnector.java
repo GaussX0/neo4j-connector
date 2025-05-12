@@ -55,6 +55,11 @@ public class Neo4jTestConnector
         final String dbUser = (String) criteria.getConnectionProperties().get("username");
         final String dbPassword = (String) criteria.getConnectionProperties().get("password");
         final String dbUri = "bolt://" + dbHost + ":" + dbPort;
+        System.out.println("Connecting to Neo4j at " + dbUri);
+        System.out.println("Username: " + dbUser);
+        System.out.println("Password: " + dbPassword);
+        System.out.println("Criteria: " + criteria);
+
 
         try (var driver = GraphDatabase.driver(dbUri,  AuthTokens.basic(dbUser, dbPassword))) {
             driver.verifyConnectivity();
