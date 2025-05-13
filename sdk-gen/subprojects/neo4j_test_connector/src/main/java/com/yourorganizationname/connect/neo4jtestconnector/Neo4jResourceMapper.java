@@ -4,6 +4,9 @@ import com.ibm.wdp.connect.common.sdk.api.models.ConnectionProperties;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetDescriptor;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetField;
 import com.ibm.wdp.connect.common.sdk.api.models.DiscoveredAssetType;
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 
 import java.util.ArrayList;
@@ -15,14 +18,19 @@ public class Neo4jResourceMapper {
     public static final String LABEL_QUERY = "CALL db.labels();";
     public static final String RELATIONSHIP_QUERY = "CALL db.relationshipTypes();";
 
-    public static String LABEL_PARAM_QUERY = "MATCH (n:<NODE_TYPE>)\n" +
+    public static final String LABEL_PARAM_QUERY = "MATCH (n:<TYPE>)\n" +
             "WITH DISTINCT keys(n) AS properties\n" +
+            "UNWIND properties AS property\n" +
+            "RETURN DISTINCT property;";
+
+    public static final String RELATIONSHIP_PARAM_QUERY = "MATCH (s)-[r:<TYPE>]->(t)\n" +
+            "WITH DISTINCT keys(r) AS properties\n" +
             "UNWIND properties AS property\n" +
             "RETURN DISTINCT property;";
 
     public void testConnection(Properties connectionProperties) throws Exception {
         final Neo4jConnection connection = new Neo4jConnection(connectionProperties);
-        try (var driver = connection.getDriver()) {
+        try (Driver driver = connection.getDriver()) {
             driver.verifyConnectivity();
         } catch (Exception e) {
             throw new Exception("Failed to connect to Neo4j database: " + e.getMessage(), e);
@@ -35,9 +43,9 @@ public class Neo4jResourceMapper {
         final Neo4jConnection connection = new Neo4jConnection(connectionProperties);
 
         // TODO: If path points to a specific asset return data only for that asset
-        try (var driver = connection.getDriver()) {
+        try (Driver driver = connection.getDriver()) {
             driver.verifyConnectivity();
-            try (var session = driver.session()) {
+            try (Session session = driver.session()) {
                 if (path == null || path.isEmpty() || path.equals("/")) {
                     System.out.println("GET_ALL_ASSET_DESCRIPTORS");
                     response = this.getAllAssetDescriptors(session);
@@ -47,20 +55,19 @@ public class Neo4jResourceMapper {
                 }
             }
         }
-        System.out.println(response);
         return response;
     }
 
     public List<CustomFlightAssetDescriptor> getAllAssetDescriptors(Session session) {
         List<CustomFlightAssetDescriptor> response = new ArrayList<>();
-        var labels = session.run(LABEL_QUERY);
+        Result labels = session.run(LABEL_QUERY);
         while (labels.hasNext()) {
-            var label = labels.next();
+            Record label = labels.next();
             response.add(this.getFlightAssetDescriptor(label.get(0).asString(), "Label"));
         }
-        var relationships = session.run(RELATIONSHIP_QUERY);
+        Result relationships = session.run(RELATIONSHIP_QUERY);
         while (relationships.hasNext()) {
-            var relationship = relationships.next();
+            Record relationship = relationships.next();
             response.add(this.getFlightAssetDescriptor(relationship.get(0).asString(), "Relationship"));
         }
         return response;
@@ -70,12 +77,12 @@ public class Neo4jResourceMapper {
         List<CustomFlightAssetDescriptor> response = new ArrayList<>();
         String type = path.substring(1, path.indexOf("_"));
         String name = path.substring(path.indexOf("_") + 1);
-        System.out.println("GET_ASSET_DESCRIPTOR_FOR_PATH: " + path + " type: " + type + " name: " + name);
-        String query = LABEL_PARAM_QUERY.replace("<NODE_TYPE>", name);
-        var properties = session.run(query);
+        // TODO: Escape type to prevent injection
+        String query = getQueryForType(type).replace("<TYPE>", name);
+        Result properties = session.run(query);
         List<CustomFlightAssetField> fields = new ArrayList<>();
         while (properties.hasNext()) {
-            var property = properties.next();
+            Record property = properties.next();
             String fieldName = property.get(0).asString();
             CustomFlightAssetField field = new CustomFlightAssetField();
             field.setName(fieldName);
@@ -84,6 +91,15 @@ public class Neo4jResourceMapper {
         }
         response.add(this.getFlightAssetDescriptor(name, type, fields));
         return response;
+    }
+
+    private String getQueryForType(String type) {
+        if (type.equals("Label")) {
+            return LABEL_PARAM_QUERY;
+        } else if (type.equals("Relationship")) {
+            return RELATIONSHIP_PARAM_QUERY;
+        }
+        throw new IllegalArgumentException("Invalid type: " + type);
     }
 
     private CustomFlightAssetDescriptor getFlightAssetDescriptor(String name, String type){
@@ -100,7 +116,6 @@ public class Neo4jResourceMapper {
         assetType.setDatasetContainer(false);
         descriptor.setAssetType(assetType);
 
-        // TODO: if path points to a specific label or relationship fields should contain all fields of that object
         descriptor.setFields(fields);
         return descriptor;
     }
