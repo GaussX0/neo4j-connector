@@ -52,7 +52,7 @@ public class Neo4jTestConnector
     @Override
     public List<CustomFlightAssetDescriptor> discoverAssets(CustomFlightAssetsCriteria criteria) throws Exception
     {
-        return resourceMapper.getAssetDescriptors(criteria.getConnectionProperties());
+        return resourceMapper.getAssetDescriptors(criteria.getConnectionProperties(), criteria.getPath());
     }
 
     @Override
