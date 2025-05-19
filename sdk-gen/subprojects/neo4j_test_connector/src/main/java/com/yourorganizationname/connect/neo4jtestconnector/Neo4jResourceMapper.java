@@ -28,8 +28,10 @@ public class Neo4jResourceMapper {
             "UNWIND properties AS property\n" +
             "RETURN DISTINCT property;";
 
-    public void testConnection(Properties connectionProperties) throws Exception {
-        final Neo4jConnection connection = new Neo4jConnection(connectionProperties);
+    private Neo4jConnection connection = null;
+
+    public void connect(Properties connectionProperties) throws Exception {
+        this.connection = new Neo4jConnection(connectionProperties);
         try (Driver driver = connection.getDriver()) {
             driver.verifyConnectivity();
         } catch (Exception e) {
@@ -80,7 +82,7 @@ public class Neo4jResourceMapper {
         // TODO: Escape type to prevent injection
         String query = getQueryForType(type).replace("<TYPE>", name);
         Result properties = session.run(query);
-        List<CustomFlightAssetField> fields = new ArrayList<>();
+        List<CustomFlightAssetField> fields = this.getIdFieldsForType(type);
         while (properties.hasNext()) {
             Record property = properties.next();
             String fieldName = property.get(0).asString();
@@ -118,5 +120,29 @@ public class Neo4jResourceMapper {
 
         descriptor.setFields(fields);
         return descriptor;
+    }
+
+    private List<CustomFlightAssetField> getIdFieldsForType(String type){
+        List<CustomFlightAssetField> fields = new ArrayList<>();
+        if (type.equals("Label")) {
+            CustomFlightAssetField field = new CustomFlightAssetField();
+            field.setName("neo4j_internal_elementId");
+            field.setType("String");
+            fields.add(field);
+        } else if (type.equals("Relationship")) {
+            CustomFlightAssetField elementIdField = new CustomFlightAssetField();
+            elementIdField.setName("neo4j_internal_elementId");
+            elementIdField.setType("String");
+            fields.add(elementIdField);
+            CustomFlightAssetField sourceNodeElementIdField = new CustomFlightAssetField();
+            sourceNodeElementIdField.setName("neo4j_internal_sourceElementId");
+            sourceNodeElementIdField.setType("String");
+            fields.add(sourceNodeElementIdField);
+            CustomFlightAssetField targetNodeElementIdField = new CustomFlightAssetField();
+            targetNodeElementIdField.setName("neo4j_internal_targetElementId");
+            targetNodeElementIdField.setType("String");
+            fields.add(targetNodeElementIdField);
+        }
+        return fields;
     }
 }

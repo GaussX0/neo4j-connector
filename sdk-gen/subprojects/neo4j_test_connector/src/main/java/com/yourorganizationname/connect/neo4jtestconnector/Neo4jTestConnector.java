@@ -5,7 +5,6 @@
 /* *************************************************** */
 package com.yourorganizationname.connect.neo4jtestconnector;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.arrow.flight.Ticket;
@@ -16,8 +15,6 @@ import com.ibm.wdp.connect.common.sdk.api.models.ConnectionActionResponse;
 import com.ibm.wdp.connect.common.sdk.api.models.ConnectionProperties;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetDescriptor;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetsCriteria;
-import org.neo4j.driver.AuthTokens;
-import org.neo4j.driver.GraphDatabase;
 
 @SuppressWarnings({ "PMD.AvoidDollarSigns", "PMD.ClassNamingConventions" })
 public class Neo4jTestConnector
@@ -34,7 +31,7 @@ public class Neo4jTestConnector
         super(properties);
     }
 
-    private Neo4jResourceMapper resourceMapper = new Neo4jResourceMapper();
+    private final Neo4jResourceMapper resourceMapper = new Neo4jResourceMapper();
 
     @Override
     public void close() throws Exception
@@ -46,7 +43,7 @@ public class Neo4jTestConnector
     @Override
     public void connect() throws Exception {
         // TODO Auto-generated method stub
-        resourceMapper.testConnection(this.getConnectionProperties());
+        resourceMapper.connect(this.getConnectionProperties());
     }
 
     @Override
@@ -55,10 +52,13 @@ public class Neo4jTestConnector
         return resourceMapper.getAssetDescriptors(criteria.getConnectionProperties(), criteria.getPath());
     }
 
+    // TODO: Method to implement for flight_info and do_get
+    // the connect method will be run first
     @Override
     public Neo4jTestSourceInteraction getSourceInteraction(CustomFlightAssetDescriptor asset, Ticket ticket)
     {
         // TODO include your ticket info
+        // if ticket is null then return tickets
         return new Neo4jTestSourceInteraction(this, asset);
     }
 
