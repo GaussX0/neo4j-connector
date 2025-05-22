@@ -8,13 +8,14 @@ import org.neo4j.driver.GraphDatabase;
 
 import java.util.Properties;
 
-public class Neo4jConnection {
+public class Neo4jConnection implements AutoCloseable {
     private ConnectionProperties connectionProperties;
     private final String dbHost;
     private final String dbPort;
-    private String dbUser;
-    private String dbPassword;
+    private final String dbUser;
+    private final String dbPassword;
     private final boolean dbSSL;
+    private Driver driver;
 
     public Neo4jConnection(ConnectionProperties connectionProperties) {
         this.connectionProperties = connectionProperties;
@@ -36,6 +37,13 @@ public class Neo4jConnection {
     }
 
     public Driver getDriver() {
+        if (driver == null) {
+            driver = createDriver();
+        }
+        return driver;
+    }
+
+    public Driver createDriver() {
         return GraphDatabase.driver(getDbUri(), getAuthToken());
     }
 
@@ -54,5 +62,12 @@ public class Neo4jConnection {
 
     public ConnectionProperties getConnectionProperties() {
         return connectionProperties;
+    }
+
+    @Override
+    public void close() {
+        if (driver != null) {
+            driver.close();
+        }
     }
 }
