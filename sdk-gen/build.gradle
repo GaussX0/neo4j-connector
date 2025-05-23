@@ -373,7 +373,11 @@ subprojects {
               from zipTree(server.outputs.files.singleFile)
             }
             def serverEnvFile = file("${unzipDir}/wlp/usr/servers/defaultServer/server.env")
-            serverEnvFile.text = "FLIGHT_URL=grpc://0.0.0.0:9090"
+            serverEnvFile.text = """
+            FLIGHT_URL=grpc://0.0.0.0:9090
+            WDPX_KUBE_FLIGHT_DEBUG_REMOTE=y 
+            WDPX_KUBE_FLIGHT_DEBUG_SUSPEND=y
+            """
             // Update server.xml file with port number and host
             def publishGRPCStr = systemProperty(project, 'docker.publish.grpc', '9090:9090')
             def publishHttpStr = systemProperty(project, 'docker.publish.http', '80:80')
