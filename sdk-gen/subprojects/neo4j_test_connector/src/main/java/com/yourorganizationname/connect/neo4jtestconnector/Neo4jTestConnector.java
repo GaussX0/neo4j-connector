@@ -42,7 +42,6 @@ public class Neo4jTestConnector
 
     @Override
     public void connect() throws Exception {
-        // TODO Auto-generated method stub
         resourceMapper.connect(this.getConnectionProperties());
     }
 

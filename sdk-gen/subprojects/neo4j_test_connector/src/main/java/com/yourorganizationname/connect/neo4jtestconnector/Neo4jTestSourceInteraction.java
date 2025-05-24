@@ -8,7 +8,9 @@ import org.apache.arrow.flight.Ticket;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class Neo4jTestSourceInteraction extends RowBasedSourceInteraction<Neo4jTestConnector> {
 
@@ -20,7 +22,10 @@ public class Neo4jTestSourceInteraction extends RowBasedSourceInteraction<Neo4jT
 
     @Override
     public List<Ticket> getTickets() {
-        return List.of(new Ticket(getAsset().toString().getBytes(StandardCharsets.UTF_8)));
+        Ticket ticket = new Ticket(String.format("{\"request_id\": \"%s\"}", UUID.randomUUID()).getBytes());
+        System.out.println(ticket);
+        System.out.println(Arrays.toString(ticket.getBytes()));
+        return List.of(ticket);
     }
 
     @Override
