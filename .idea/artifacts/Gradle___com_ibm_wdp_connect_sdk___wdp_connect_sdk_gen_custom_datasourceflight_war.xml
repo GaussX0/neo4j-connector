@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" external-system-id="GRADLE" name="Gradle : com.ibm.wdp.connect.sdk : wdp-connect-sdk-gen-custom_datasourceflight.war">
+    <output-path>$PROJECT_DIR$/sdk-gen/subprojects/custom_datasourceflight/build/libs</output-path>
+    <properties id="gradle-properties">
+      <options external-project-path="$PROJECT_DIR$/sdk-gen">
+        <buildTaskPath>:wdp-connect-sdk-gen-custom_datasourceflight:war</buildTaskPath>
+        <cleanTaskPath>:wdp-connect-sdk-gen-custom_datasourceflight:cleanWar</cleanTaskPath>
+      </options>
+    </properties>
+    <root id="archive" name="wdp-connect-sdk-gen-custom_datasourceflight.war">
+      <element id="artifact" artifact-name="Gradle : com.ibm.wdp.connect.sdk : wdp-connect-sdk-gen-custom_datasourceflight.war (exploded)" />
+    </root>
+  </artifact>
+</component>

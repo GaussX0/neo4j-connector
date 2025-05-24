@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":wdp-connect-sdk-gen-neo4j_test_connectorflight:test" external.linked.project.path="$MODULE_DIR$/../../../../sdk-gen/subprojects/neo4j_test_connectorflight" external.root.project.path="$MODULE_DIR$/../../../../sdk-gen" external.system.id="GRADLE" external.system.module.group="com.ibm.wdp.connect.sdk" external.system.module.type="sourceSet" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
+    <output-test url="file://$MODULE_DIR$/../../../../sdk-gen/subprojects/neo4j_test_connectorflight/build/classes/java/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../sdk-gen/subprojects/neo4j_test_connectorflight/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../sdk-gen/subprojects/neo4j_test_connectorflight/src/test/java" isTestSource="true" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="wdp-connect-sdk-gen.wdp-connect-sdk-gen-neo4j_test_connectorflight.main" />
+    <orderEntry type="module" module-name="wdp-connect-sdk-gen.wdp-connect-sdk-gen-java-util.main" />
+    <orderEntry type="library" name="Gradle: org.apache.arrow:flight-core:16.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.arrow:arrow-memory-core:16.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.18.2" level="project" />
+    <orderEntry type="module" module-name="wdp-connect-sdk-gen.wdp-connect-sdk-gen-java-api-models.main" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.18.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.18.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:guava:33.4.0-jre" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-all:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-tcnative-boringssl-static:2.0.69.Final" level="project" />
+    <orderEntry type="library" name="Gradle: javax.servlet:javax.servlet-api:4.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: junit:junit:4.13.2" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.arrow:arrow-vector:16.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.12.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpclient:4.5.14" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpcore:4.4.16" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.httpcomponents:httpmime:4.5.14" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.slf4j:slf4j-api:2.0.11" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Gradle: org.checkerframework:checker-qual:3.42.0" level="project" />
+    <orderEntry type="library" name="Gradle: io.swagger.core.v3:swagger-annotations:2.2.29" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:failureaccess:1.0.2" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-buffer:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-dns:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-haproxy:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-http:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-http2:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-memcache:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-mqtt:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-redis:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-smtp:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-socks:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-stomp:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-codec-xml:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-common:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-handler:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport-native-unix-common:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-handler-proxy:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-handler-ssl-ocsp:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-resolver:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-resolver-dns:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport-rxtx:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport-sctp:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport-udt:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport-classes-epoll:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-transport-classes-kqueue:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-resolver-dns-classes-macos:4.1.118.Final" level="project" />
+    <orderEntry type="library" name="Gradle: io.netty:netty-tcnative-classes:2.0.69.Final" level="project" />
+    <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.errorprone:error_prone_annotations:2.36.0" level="project" />
+    <orderEntry type="module" module-name="wdp-connect-sdk-gen.wdp-connect-sdk-gen-neo4j_test_connector.main" scope="RUNTIME" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.grpc:grpc-netty:1.65.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.grpc:grpc-protobuf:1.65.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.grpc:grpc-stub:1.65.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.grpc:grpc-api:1.65.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.apache.arrow:arrow-format:16.0.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.flatbuffers:flatbuffers-java:23.5.26" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.protobuf:protobuf-java:3.25.5" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.apache.arrow:arrow-memory-netty:16.0.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.apache.arrow:arrow-memory-netty-buffer-patch:16.0.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:slf4j-jdk14:2.0.17" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:log4j-over-slf4j:2.0.17" level="project" />
+    <orderEntry type="module" module-name="wdp-connect-sdk-gen.wdp-connect-sdk-gen-java-api.main" scope="RUNTIME" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.neo4j.driver:neo4j-java-driver:4.4.20" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.auth0:java-jwt:4.5.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.slf4j:slf4j-api:2.0.17" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-codec:commons-codec:1.18.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.apache.commons:commons-text:1.13.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.bouncycastle:bcpkix-jdk15to18:1.80" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: commons-logging:commons-logging:1.3.5" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.checkerframework:checker-qual:3.43.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.grpc:grpc-util:1.65.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.grpc:grpc-core:1.65.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.perfmark:perfmark-api:0.26.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.grpc:grpc-protobuf-lite:1.65.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.api.grpc:proto-google-common-protos:2.29.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.j2objc:j2objc-annotations:3.0.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.netty:netty-resolver-dns-native-macos:osx-aarch_64:4.1.118.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.netty:netty-resolver-dns-native-macos:osx-x86_64:4.1.118.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.netty:netty-transport-native-epoll:linux-aarch_64:4.1.118.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.netty:netty-transport-native-epoll:linux-riscv64:4.1.118.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.netty:netty-transport-native-epoll:linux-x86_64:4.1.118.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.netty:netty-transport-native-kqueue:osx-aarch_64:4.1.118.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.netty:netty-transport-native-kqueue:osx-x86_64:4.1.118.Final" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.apache.commons:commons-pool2:2.12.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.reactivestreams:reactive-streams:1.0.4" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.apache.commons:commons-lang3:3.17.0" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.bouncycastle:bcutil-jdk15to18:1.80" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.bouncycastle:bcprov-jdk15to18:1.80" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.23" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: io.grpc:grpc-context:1.65.1" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Gradle: com.google.android:annotations:4.1.1.4" level="project" />
+  </component>
+  <component name="TestModuleProperties" production-module="wdp-connect-sdk-gen.wdp-connect-sdk-gen-neo4j_test_connectorflight.main" />
+</module>
