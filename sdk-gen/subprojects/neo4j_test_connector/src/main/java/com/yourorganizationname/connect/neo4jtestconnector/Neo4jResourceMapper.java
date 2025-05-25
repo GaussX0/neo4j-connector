@@ -43,42 +43,57 @@ public class Neo4jResourceMapper {
     public List<CustomFlightAssetDescriptor> getAssetDescriptors(ConnectionProperties connectionProperties, String path) {
         List<CustomFlightAssetDescriptor> response = new ArrayList<>();
         final Neo4jConnection connection = new Neo4jConnection(connectionProperties);
+        Neo4jPath neo4jPath = new Neo4jPath(path);
 
         // TODO: If path points to a specific asset return data only for that asset
         try (Driver driver = connection.getDriver()) {
             driver.verifyConnectivity();
             try (Session session = driver.session()) {
-                if (path == null || path.isEmpty() || path.equals("/")) {
+                if (neo4jPath.isGetAll()) {
                     System.out.println("GET_ALL_ASSET_DESCRIPTORS");
-                    response = this.getAllAssetDescriptors(session);
+                    response = this.getTypeDescriptors();
+                } else if (neo4jPath.isGetType()) {
+                    System.out.println("GET_TYPE_DESCRIPTOR");
+                    response = this.getAllAssetDescriptorsForType(session, neo4jPath.getType());
                 } else {
                     System.out.println("GET_ASSET_DESCRIPTOR_FOR_PATH: " + path);
-                    response = this.getAssetDescriptorForPath(session, path);
+                    response = this.getAssetDescriptorForPath(session, neo4jPath);
                 }
             }
         }
         return response;
     }
 
-    public List<CustomFlightAssetDescriptor> getAllAssetDescriptors(Session session) {
+    public List<CustomFlightAssetDescriptor> getTypeDescriptors() {
         List<CustomFlightAssetDescriptor> response = new ArrayList<>();
-        Result labels = session.run(LABEL_QUERY);
-        while (labels.hasNext()) {
-            Record label = labels.next();
-            response.add(this.getFlightAssetDescriptor(label.get(0).asString(), "Label"));
+        response.add(this.getTypeAssetDescriptor("Label"));
+        response.add(this.getTypeAssetDescriptor("Relationship"));
+        return response;
+    }
+
+    public List<CustomFlightAssetDescriptor> getAllAssetDescriptorsForType(Session session, String type) {
+        List<CustomFlightAssetDescriptor> response = new ArrayList<>();
+        if (type.equals("Label")) {
+            Result labels = session.run(LABEL_QUERY);
+            while (labels.hasNext()) {
+                Record label = labels.next();
+                response.add(this.getFlightAssetDescriptor(label.get(0).asString(), "Label"));
+            }
         }
-        Result relationships = session.run(RELATIONSHIP_QUERY);
-        while (relationships.hasNext()) {
-            Record relationship = relationships.next();
-            response.add(this.getFlightAssetDescriptor(relationship.get(0).asString(), "Relationship"));
+        if (type.equals("Relationship")) {
+            Result relationships = session.run(RELATIONSHIP_QUERY);
+            while (relationships.hasNext()) {
+                Record relationship = relationships.next();
+                response.add(this.getFlightAssetDescriptor(relationship.get(0).asString(), "Relationship"));
+            }
         }
         return response;
     }
 
-    public List<CustomFlightAssetDescriptor> getAssetDescriptorForPath(Session session, String path) {
+    public List<CustomFlightAssetDescriptor> getAssetDescriptorForPath(Session session, Neo4jPath path) {
         List<CustomFlightAssetDescriptor> response = new ArrayList<>();
-        String type = path.substring(1, path.indexOf("_"));
-        String name = path.substring(path.indexOf("_") + 1);
+        String type = path.getType();
+        String name = path.getName();
         // TODO: Escape type to prevent injection
         String query = getQueryForType(type).replace("<TYPE>", name);
         Result properties = session.run(query);
@@ -108,10 +123,22 @@ public class Neo4jResourceMapper {
         return this.getFlightAssetDescriptor(name, type, new ArrayList<>());
     }
 
+    private CustomFlightAssetDescriptor getTypeAssetDescriptor(String type){
+        CustomFlightAssetDescriptor descriptor = new CustomFlightAssetDescriptor();
+        descriptor.setName(type);
+        descriptor.setPath("/" + type);
+        DiscoveredAssetType assetType = new DiscoveredAssetType();
+        assetType.setType(type);
+        assetType.setDataset(false);
+        assetType.setDatasetContainer(true);
+        descriptor.setAssetType(assetType);
+        return descriptor;
+    }
+
     private CustomFlightAssetDescriptor getFlightAssetDescriptor(String name, String type, List<CustomFlightAssetField> fields) {
         CustomFlightAssetDescriptor descriptor = new CustomFlightAssetDescriptor();
         descriptor.setName(name);
-        descriptor.setPath("/" + type + "_" + name);
+        descriptor.setPath("/" + type + "/" + name);
         DiscoveredAssetType assetType = new DiscoveredAssetType();
         assetType.setType(type);
         assetType.setDataset(true);
@@ -145,4 +172,5 @@ public class Neo4jResourceMapper {
         }
         return fields;
     }
+
 }
