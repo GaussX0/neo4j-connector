@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class Neo4jTestSourceInteraction extends RowBasedSourceInteraction<Neo4jTestConnector> {
-
+    private boolean hasNext = true;
     public Neo4jTestSourceInteraction(Neo4jTestConnector connector, CustomFlightAssetDescriptor asset) {
         super();
         setConnector(connector);
@@ -34,13 +34,23 @@ public class Neo4jTestSourceInteraction extends RowBasedSourceInteraction<Neo4jT
         // TODO: Implement logic to retrieve fields
         // 1. wektory, krawedzie
         // 2. typ
+        CustomFlightAssetField field = new CustomFlightAssetField();
+        field.setType("varchar");
+        field.setName("name");
+        field.setDescription("This is a description");
 
-        return new ArrayList<>();
+
+        return List.of(field);
     }
 
     @Override
     public Record getRecord() {
-        return new Record();
+        System.out.println("getRecord");
+        if (hasNext) {
+            hasNext = false;
+            return new Record();
+        }
+        return null;
     }
 
     @Override
