@@ -95,9 +95,25 @@ public class Neo4jResourceMapper {
         String type = path.getType();
         String name = path.getName();
         // TODO: Escape type to prevent injection
-        String query = getQueryForType(type).replace("<TYPE>", name);
+        List<CustomFlightAssetField> fields = this.getFieldsForPath(session, path);
+        response.add(this.getFlightAssetDescriptor(name, type, fields));
+        return response;
+    }
+
+    public List<CustomFlightAssetField> getFields(ConnectionProperties connectionProperties, Neo4jPath path) {
+        this.connection = new Neo4jConnection(connectionProperties);
+        try (Driver driver = connection.getDriver()) {
+            driver.verifyConnectivity();
+            try (Session session = driver.session()) {
+                return this.getFieldsForPath(session, path);
+            }
+        }
+    }
+
+    private List<CustomFlightAssetField> getFieldsForPath(Session session, Neo4jPath path) {
+        String query = getQueryForType(path.getType()).replace("<TYPE>", path.getName());
         Result properties = session.run(query);
-        List<CustomFlightAssetField> fields = this.getIdFieldsForType(type);
+        List<CustomFlightAssetField> fields = this.getIdFieldsForType(path.getType());
         while (properties.hasNext()) {
             Record property = properties.next();
             String fieldName = property.get(0).asString();
@@ -106,8 +122,7 @@ public class Neo4jResourceMapper {
             field.setType("String");
             fields.add(field);
         }
-        response.add(this.getFlightAssetDescriptor(name, type, fields));
-        return response;
+        return fields;
     }
 
     private String getQueryForType(String type) {
