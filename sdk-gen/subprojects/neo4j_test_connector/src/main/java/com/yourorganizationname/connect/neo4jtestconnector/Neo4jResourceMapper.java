@@ -4,6 +4,7 @@ import com.ibm.wdp.connect.common.sdk.api.models.ConnectionProperties;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetDescriptor;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetField;
 import com.ibm.wdp.connect.common.sdk.api.models.DiscoveredAssetType;
+import com.google.gson.Gson;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
@@ -11,6 +12,7 @@ import org.neo4j.driver.Session;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class Neo4jResourceMapper {
@@ -22,6 +24,9 @@ public class Neo4jResourceMapper {
             "WITH DISTINCT keys(n) AS properties\n" +
             "UNWIND properties AS property\n" +
             "RETURN DISTINCT property;";
+
+    public static final String LABEL_PARAM_QUERY_PROPERTIES = "MATCH (n:<TYPE>)\n" +
+            "RETURN properties(n) AS properties;";
 
     public static final String RELATIONSHIP_PARAM_QUERY = "MATCH (s)-[r:<TYPE>]->(t)\n" +
             "WITH DISTINCT keys(r) AS properties\n" +
@@ -105,13 +110,31 @@ public class Neo4jResourceMapper {
         try (Driver driver = connection.getDriver()) {
             driver.verifyConnectivity();
             try (Session session = driver.session()) {
-                return this.getFieldsForPath(session, path);
+                return this.getJSONFieldsForPath(session, path);
             }
         }
     }
 
+    private List<CustomFlightAssetField> getJSONFieldsForPath(Session session, Neo4jPath path) {
+        String query = getQueryForType(path.getType(), true).replace("<TYPE>", path.getName());
+        Result properties = session.run(query);
+        List<CustomFlightAssetField> fields = this.getIdFieldsForType(path.getType());
+        Gson gson = new Gson();
+        while (properties.hasNext()) {
+            Record property = properties.next();
+            Map<String, Object> fieldMap = property.get(0).asMap();
+            String fieldName = gson.toJson(fieldMap);
+            CustomFlightAssetField field = new CustomFlightAssetField();
+            field.setName(fieldName);
+            field.setType("JSON");
+            field.setDescription("description");
+            fields.add(field);
+        }
+        return fields;
+    }
+
     private List<CustomFlightAssetField> getFieldsForPath(Session session, Neo4jPath path) {
-        String query = getQueryForType(path.getType()).replace("<TYPE>", path.getName());
+        String query = getQueryForType(path.getType(), false).replace("<TYPE>", path.getName());
         Result properties = session.run(query);
         List<CustomFlightAssetField> fields = this.getIdFieldsForType(path.getType());
         while (properties.hasNext()) {
@@ -125,8 +148,11 @@ public class Neo4jResourceMapper {
         return fields;
     }
 
-    private String getQueryForType(String type) {
+    private String getQueryForType(String type, Boolean properties) {
         if (type.equals("Label")) {
+            if (properties) {
+                return LABEL_PARAM_QUERY_PROPERTIES;
+            }
             return LABEL_PARAM_QUERY;
         } else if (type.equals("Relationship")) {
             return RELATIONSHIP_PARAM_QUERY;

@@ -68,6 +68,6 @@ dependencies {
   api project(':' + rootProject.name + '-java-api-models')
   api project(':' + rootProject.name + '-java-api')
   implementation group: 'org.neo4j.driver', name: 'neo4j-java-driver', version: '4.4.20'
-
+  implementation 'com.google.code.gson:gson:2.10.1'
   testImplementation group: 'junit', name: 'junit', version: project['junit.version']
 }
