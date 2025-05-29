@@ -6,20 +6,25 @@ import com.ibm.wdp.connect.common.sdk.api.models.ConnectionProperties;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetDescriptor;
 import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetField;
 import org.apache.arrow.flight.Ticket;
+import org.neo4j.driver.Result;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 public class Neo4jTestSourceInteraction extends RowBasedSourceInteraction<Neo4jTestConnector> {
-    private boolean hasNext = true;
-    private final Neo4jResourceMapper resourceMapper = new Neo4jResourceMapper();
-    public Neo4jTestSourceInteraction(Neo4jTestConnector connector, CustomFlightAssetDescriptor asset) {
+    private final Neo4jResourceMapper mapper;
+    private final Neo4jPath path;
+    private List<org.neo4j.driver.Record> queryResult = null;
+    private int index = 0;
+    private boolean queryRan = false;
+
+    public Neo4jTestSourceInteraction(Neo4jTestConnector connector, CustomFlightAssetDescriptor asset, Neo4jResourceMapper mapper) {
         super();
         setConnector(connector);
         setAsset(asset);
+        this.mapper = mapper;
+        this.path = new Neo4jPath(this.getAsset().getPath());
     }
 
     @Override
@@ -32,27 +37,31 @@ public class Neo4jTestSourceInteraction extends RowBasedSourceInteraction<Neo4jT
 
     @Override
     public List<CustomFlightAssetField> getFields() {
-
-        // TODO: Implement logic to retrieve fields
-        // 1. wektory, krawedzie
-        // 2. typ
-        Neo4jPath path = new Neo4jPath(getAsset().getPath());
-        ConnectionProperties connectionProperties = getAsset().getConnectionProperties();
-        List<CustomFlightAssetField> fields = resourceMapper.getFields(connectionProperties, path);
-        return fields;
+        return mapper.getFields(this.getAsset().getConnectionProperties(), this.path);
     }
 
     @Override
     public Record getRecord() {
-        System.out.println("getRecord");
-        if (hasNext) {
-            hasNext = false;
-            // TODO: implement records as JSONs from neo4j
-//            Record record = new Record();
-//            record.appendValue(123);
-            return new Record();
+        if (queryRan && queryResult.size() < index -1 ) {
+            return null;
+        }
+        if (!queryRan){
+            queryRan = true;
+            queryResult = this.mapper.getValuesForPath(this.getAsset().getConnectionProperties(), this.path);
+            index = 0;
+        }
+        if (queryResult.size() < index -1 ) {
+            return this.createRecordFromNeo4j(queryResult.get(index++));
         }
         return null;
+    }
+
+    private Record createRecordFromNeo4j(org.neo4j.driver.Record record){
+        Record ret = new Record();
+        record.values().forEach(
+                value -> ret.appendValue(value.asString())
+        );
+        return ret;
     }
 
     @Override

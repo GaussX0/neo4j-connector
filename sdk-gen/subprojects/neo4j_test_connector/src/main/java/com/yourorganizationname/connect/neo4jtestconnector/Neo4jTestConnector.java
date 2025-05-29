@@ -58,7 +58,7 @@ public class Neo4jTestConnector
     {
         // TODO include your ticket info
         // if ticket is null then return tickets
-        return new Neo4jTestSourceInteraction(this, asset);
+        return new Neo4jTestSourceInteraction(this, asset, this.resourceMapper);
     }
 
     @Override

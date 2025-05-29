@@ -50,7 +50,6 @@ public class Neo4jResourceMapper {
         final Neo4jConnection connection = new Neo4jConnection(connectionProperties);
         Neo4jPath neo4jPath = new Neo4jPath(path);
 
-        // TODO: If path points to a specific asset return data only for that asset
         try (Driver driver = connection.getDriver()) {
             driver.verifyConnectivity();
             try (Session session = driver.session()) {
@@ -110,7 +109,7 @@ public class Neo4jResourceMapper {
         try (Driver driver = connection.getDriver()) {
             driver.verifyConnectivity();
             try (Session session = driver.session()) {
-                return this.getJSONFieldsForPath(session, path);
+                return this.getFieldsForPath(session, path);
             }
         }
     }
@@ -131,6 +130,17 @@ public class Neo4jResourceMapper {
             fields.add(field);
         }
         return fields;
+    }
+
+    public List<Record> getValuesForPath(ConnectionProperties connectionProperties, Neo4jPath path) {
+        this.connection = new Neo4jConnection(connectionProperties);
+        try (Driver driver = connection.getDriver()) {
+            driver.verifyConnectivity();
+            try (Session session = driver.session()) {
+                String query = getQueryForType(path.getType(), true).replace("<TYPE>", path.getName());
+                return session.run(query).list();
+            }
+        }
     }
 
     private List<CustomFlightAssetField> getFieldsForPath(Session session, Neo4jPath path) {
