@@ -10,10 +10,7 @@ import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class Neo4jResourceMapper {
 
@@ -23,15 +20,21 @@ public class Neo4jResourceMapper {
     public static final String LABEL_PARAM_QUERY = "MATCH (n:<TYPE>)\n" +
             "WITH DISTINCT keys(n) AS properties\n" +
             "UNWIND properties AS property\n" +
-            "RETURN DISTINCT property;";
+            "RETURN DISTINCT property\n" +
+            "ORDER BY property;";
 
     public static final String LABEL_PARAM_QUERY_PROPERTIES = "MATCH (n:<TYPE>)\n" +
-            "RETURN properties(n) AS properties;";
+            "RETURN properties(n) AS properties, elementId(n) as neo4j_internal_elementId;";
 
     public static final String RELATIONSHIP_PARAM_QUERY = "MATCH (s)-[r:<TYPE>]->(t)\n" +
             "WITH DISTINCT keys(r) AS properties\n" +
             "UNWIND properties AS property\n" +
-            "RETURN DISTINCT property;";
+            "RETURN DISTINCT property\n" +
+            "ORDER BY property;";
+
+    public static final String RELATIONSHIP_PARAM_QUERY_PROPERTIES = "MATCH (s)-[r:<TYPE>]->(t)\n" +
+            "RETURN properties(r) as properties, elementId(r) as neo4j_internal_elementId, " +
+            "elementId(s) as neo4j_internal_sourceElementId, elementId(t) as neo4j_internal_targetElementId";
 
     private Neo4jConnection connection = null;
 
@@ -134,13 +137,25 @@ public class Neo4jResourceMapper {
         }
     }
 
-    public List<Record> getValuesForPath(ConnectionProperties connectionProperties, Neo4jPath path) {
+    public List<Map<String, Object>> getValuesForPath(ConnectionProperties connectionProperties, Neo4jPath path) {
         this.connection = new Neo4jConnection(connectionProperties);
         try (Driver driver = connection.getDriver()) {
             driver.verifyConnectivity();
             try (Session session = driver.session()) {
                 String query = getQueryForType(path.getType(), true).replace("<TYPE>", path.getName());
-                return session.run(query).list();
+                Result properties = session.run(query);
+                List<Map<String, Object>> records = new ArrayList<>();
+                while (properties.hasNext()) {
+                    Record property = properties.next();
+                    Map<String, Object> props = new HashMap<>(property.get("properties").asMap());
+
+                    props.put("neo4j_internal_elementId", property.get("neo4j_internal_elementId").asString());
+                    props.put("neo4j_internal_sourceElementId", property.get("neo4j_internal_sourceElementId").asString());
+                    props.put("neo4j_internal_targetElementId", property.get("neo4j_internal_targetElementId").asString());
+
+                    records.add(props);
+                }
+                return records;
             }
         }
     }
@@ -167,6 +182,9 @@ public class Neo4jResourceMapper {
             }
             return LABEL_PARAM_QUERY;
         } else if (type.equals("Relationship")) {
+            if (properties){
+                return RELATIONSHIP_PARAM_QUERY_PROPERTIES;
+            }
             return RELATIONSHIP_PARAM_QUERY;
         }
         throw new IllegalArgumentException("Invalid type: " + type);
