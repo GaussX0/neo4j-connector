@@ -114,22 +114,24 @@ public class Neo4jResourceMapper {
         }
     }
 
-    private List<CustomFlightAssetField> getJSONFieldsForPath(Session session, Neo4jPath path) {
-        String query = getQueryForType(path.getType(), true).replace("<TYPE>", path.getName());
-        Result properties = session.run(query);
-        List<CustomFlightAssetField> fields = this.getIdFieldsForType(path.getType());
-        Gson gson = new Gson();
-        while (properties.hasNext()) {
-            Record property = properties.next();
-            Map<String, Object> fieldMap = property.get(0).asMap();
-            String fieldName = gson.toJson(fieldMap);
-            CustomFlightAssetField field = new CustomFlightAssetField();
-            field.setName(fieldName);
-            field.setType("JSON");
-            field.setDescription("description");
-            fields.add(field);
+    public List<String> getJSONRecordsForPath(ConnectionProperties connectionProperties, Neo4jPath path) {
+        this.connection = new Neo4jConnection(connectionProperties);
+        try (Driver driver = connection.getDriver()) {
+            driver.verifyConnectivity();
+            try (Session session = driver.session()) {
+                String query = getQueryForType(path.getType(), true).replace("<TYPE>", path.getName());
+                Result properties = session.run(query);
+                List<String> records = new ArrayList<>();
+                Gson gson = new Gson();
+                while (properties.hasNext()) {
+                    Record property = properties.next();
+                    Map<String, Object> propMap = property.get(0).asMap();
+                    String record = gson.toJson(propMap);
+                    records.add(record);
+                }
+                return records;
+            }
         }
-        return fields;
     }
 
     public List<Record> getValuesForPath(ConnectionProperties connectionProperties, Neo4jPath path) {

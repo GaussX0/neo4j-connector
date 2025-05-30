@@ -8,6 +8,7 @@ import com.ibm.wdp.connect.common.sdk.api.models.CustomFlightAssetField;
 import org.apache.arrow.flight.Ticket;
 import org.neo4j.driver.Result;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -19,12 +20,16 @@ public class Neo4jTestSourceInteraction extends RowBasedSourceInteraction<Neo4jT
     private int index = 0;
     private boolean queryRan = false;
 
+    private List<String> records = new ArrayList<>();
+    private int iterator = 0;
+
     public Neo4jTestSourceInteraction(Neo4jTestConnector connector, CustomFlightAssetDescriptor asset, Neo4jResourceMapper mapper) {
         super();
         setConnector(connector);
         setAsset(asset);
         this.mapper = mapper;
         this.path = new Neo4jPath(this.getAsset().getPath());
+        this.records = this.mapper.getJSONRecordsForPath(this.getAsset().getConnectionProperties(), this.path);
     }
 
     @Override
@@ -42,16 +47,22 @@ public class Neo4jTestSourceInteraction extends RowBasedSourceInteraction<Neo4jT
 
     @Override
     public Record getRecord() {
-        if (queryRan && queryResult.size() < index -1 ) {
-            return null;
-        }
-        if (!queryRan){
-            queryRan = true;
-            queryResult = this.mapper.getValuesForPath(this.getAsset().getConnectionProperties(), this.path);
-            index = 0;
-        }
-        if (queryResult.size() < index -1 ) {
-            return this.createRecordFromNeo4j(queryResult.get(index++));
+//        if (queryRan && queryResult.size() < index -1 ) {
+//            return null;
+//        }
+//        if (!queryRan){
+//            queryRan = true;
+//            queryResult = this.mapper.getValuesForPath(this.getAsset().getConnectionProperties(), this.path);
+//            index = 0;
+//        }
+//        if (queryResult.size() < index -1 ) {
+//            return this.createRecordFromNeo4j(queryResult.get(index++));
+//        }
+        if (this.iterator < this.records.size()) {
+            Record record = new Record();
+            record.appendValue(this.records.get(this.iterator));
+            iterator++;
+            return record;
         }
         return null;
     }
