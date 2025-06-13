@@ -4,6 +4,7 @@ A connector meant to be a communication interface between a Neo4J database and a
 1. Navigate to the `sdk-gen` folder and run the Gradle build command:
 
 `./gradlew :wdp-connect-sdk-gen-neo4j_test_connectorflight:dockerBuild`
+
 2. Next run: 
 
 `./gradlew :wdp-connect-sdk-gen-neo4j_test_connectorflight:dockerStart`
